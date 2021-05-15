@@ -48,22 +48,31 @@ namespace SugiBpm.Delegation.Test
         {
             using (var unitWork = UnitOfWork.Start())
             {
-                User user = new User("h.c");
+                var userName = "h.c";
+                var groupName = "c#";
+                User user = new User(userName);
                 user.FirstName = "Hugo";
                 user.LastName = "Cheng";
                 user.Email = "ephebe@msn.com";
 
-                Group group = new Group("c#");
+                Group group = new Group(groupName);
                 group.Name = "C# Team";
 
                 var userRepository = new EFRepository<User>();
+                if (!userRepository.Any(s => s.UniqueName == userName))
+                {
+                    userRepository.Add(user);
+                }
                 var groupRepository = new EFRepository<Group>();
-
+                if (!groupRepository.Any(s => s.UniqueName == groupName))
+                {
+                    groupRepository.Add(group);
+                }
                 //Type=hierarchy，似乎就是表示從屬的關係，Role則是表示已為從屬，且在此組織中扮演何角色
                 Membership membership = new Membership(SequentialGuid.NewGuid());
                 membership.Type = "hierarchy";
                 membership.Role = "Member";
-                membership.User = userRepository.Single(s => s.FirstName == "Hugo");
+                membership.User = userRepository.Single(s => s.UniqueName == userName);
                 membership.Group = groupRepository.Single(s => s.GroupName == "C# Team");
 
                 var membershipRepository = new EFRepository<Membership>();
@@ -76,7 +85,7 @@ namespace SugiBpm.Delegation.Test
         public void TestResolveArgumentActor()
         {
             ActorExpressionResolver resolver = new ActorExpressionResolver();
-            ExecutionContext context = new ExecutionContext(null,null, null);
+            ExecutionContext context = new ExecutionContext(null, null, null);
             var actor = resolver.ResolveArgument("Actor(h.c)", context);
 
             Assert.IsNotNull(actor);
@@ -86,7 +95,7 @@ namespace SugiBpm.Delegation.Test
         public void TestResolveArgumentGroup()
         {
             ActorExpressionResolver resolver = new ActorExpressionResolver();
-            ExecutionContext context = new ExecutionContext(null,null, null);
+            ExecutionContext context = new ExecutionContext(null, null, null);
             var group = resolver.ResolveArgument("Group(c#)", context);
 
             Assert.IsNotNull(group);
@@ -99,7 +108,7 @@ namespace SugiBpm.Delegation.Test
         public void TestResolveArgumentRole()
         {
             ActorExpressionResolver resolver = new ActorExpressionResolver();
-            ExecutionContext context = new ExecutionContext(null,null, null);
+            ExecutionContext context = new ExecutionContext(null, null, null);
 
             var user = resolver.ResolveArgument("Actor(h.c) -> Group(hierarchy) -> Role(Member)", context);
             Assert.IsNotNull(user);
