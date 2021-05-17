@@ -76,7 +76,10 @@ namespace SugiBpm.Delegation.Test
                 membership.Group = groupRepository.Single(s => s.GroupName == "C# Team");
 
                 var membershipRepository = new EFRepository<Membership>();
-                membershipRepository.Add(membership);
+                if (!membershipRepository.Any(s => s.User == membership.User && s.Group == membership.Group && s.Role == membership.Role && s.Type == membership.Type))
+                {
+                    membershipRepository.Add(membership);
+                }
                 unitWork.Flush();
             }
         }

@@ -21,7 +21,7 @@ namespace SugiBpm.Delegation.Domain
     public class DelegationHelper : IDelegationHelper
     {
         [ImportMany]
-        public IEnumerable<System.Lazy<IActionHandler, IClassNameMetadata>> ActionHanders { get;set;}
+        public IEnumerable<System.Lazy<IActionHandler, IClassNameMetadata>> ActionHanders { get; set; }
         [ImportMany]
         public IEnumerable<System.Lazy<IDecisionHandler, IClassNameMetadata>> DecisionHandlers { get; set; }
         [ImportMany]
@@ -100,9 +100,8 @@ namespace SugiBpm.Delegation.Domain
                 try
                 {
                     var transitionRepository = ServiceLocator.Current.GetInstance<IRepository<Transition>>();
-                   
-                    selectedTransition = transitionRepository.With(s=>s.To)
-                        .Query(new Specification<Transition>(s => s.From.Id == executionContext.Node.Id && s.Name == transitionName)).Single();
+
+                    selectedTransition = transitionRepository.Query(new Specification<Transition>(s => s.From.Id == executionContext.Node.Id && s.Name == transitionName)).Single();
                 }
                 catch (Exception t)
                 {

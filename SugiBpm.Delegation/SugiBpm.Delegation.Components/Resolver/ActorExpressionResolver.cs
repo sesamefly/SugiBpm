@@ -191,10 +191,6 @@ namespace SugiBpm.Delegation.Components
                 {
                     throw new SystemException("can't resolve group-argument : a group must be calculated from a User, not a " + resolvedActor.GetType().FullName, e);
                 }
-                catch
-                {
-                    //throw new SystemException("can't resolve group-argument : can't find the hierarchy-memberschip of User " + user.Id + " and membership-type " + membershipType + " : " + e.Message, e);
-                }
 
                 return group;
             }
