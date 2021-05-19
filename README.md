@@ -7,7 +7,6 @@
 > 3、IOC使用AutoFac   
 > 4、使用MEF載入Delegation    
 > (关于 MEF 官方文档)[https://docs.microsoft.com/zh-cn/dotnet/framework/mef/]
------
 
 ## 关于 NetBpm 项目
 ### 主页
@@ -15,9 +14,9 @@
 - [sourceforge](https://sourceforge.net/projects/netbpm/)
 
 ### 参考文档
-- (原理篇)[http://www.uml.org.cn/soa/201512302.asp]
-- (安装篇)[https://www.geek-share.com/detail/2424683961.html]
-- (归纳篇)[https://www.cnblogs.com/anbylau2130/p/3878115.html]
+- [原理篇](http://www.uml.org.cn/soa/201512302.asp)
+- [安装篇](https://www.geek-share.com/detail/2424683961.html)
+- [归纳篇](https://www.cnblogs.com/anbylau2130/p/3878115.html)
 
 ## 运行
 ### 生成数据库
