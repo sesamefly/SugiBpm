@@ -8,17 +8,19 @@
 > 4、使用MEF載入Delegation    
 > (关于 MEF 官方文档)[https://docs.microsoft.com/zh-cn/dotnet/framework/mef/]
 -----
-参考文档
+
+## 关于 NetBpm 项目
+### 主页
+- [官方(已不可访问)](http://www.netbpm.org)
+- [sourceforge](https://sourceforge.net/projects/netbpm/)
+
+### 参考文档
 - (原理篇)[http://www.uml.org.cn/soa/201512302.asp]
 - (安装篇)[https://www.geek-share.com/detail/2424683961.html]
 - (归纳篇)[https://www.cnblogs.com/anbylau2130/p/3878115.html]
 
------
-NetBpm 项目: 
-- [官方(已不可访问)](http://www.netbpm.org)
-- [sourceforge](https://sourceforge.net/projects/netbpm/)
-
-## 生成数据库
+## 运行
+### 生成数据库
 - 创建名为 SugiBpm 的数据库
 - 修改所有的连接字符串
 - 运行 web 项目
