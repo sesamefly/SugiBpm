@@ -12,7 +12,9 @@ namespace SugiBpm.Execution.Test.Mappings
     {
         public ForkMap()
         {
-            HasOptional(o => o.ForkDelegation).WithOptionalDependent().Map(m => m.MapKey("forkDelegation"));
+            Property(s => s.ForkDelegationId).HasColumnName("forkDelegation").IsOptional();
+            HasOptional(o => o.ForkDelegation).WithMany().HasForeignKey(f => f.ForkDelegationId);
+            //HasOptional(o => o.ForkDelegation).WithOptionalDependent().Map(m => m.MapKey("forkDelegation"));
         }
     }
 }

@@ -3,6 +3,9 @@ using System.Xml;
 
 namespace SugiBpm.Definition.Domain
 {
+    /// <summary>
+    /// 决心、决议
+    /// </summary>
     public class Decision : Node
     {
         public Guid? DecisionDelegationId { get; set; }

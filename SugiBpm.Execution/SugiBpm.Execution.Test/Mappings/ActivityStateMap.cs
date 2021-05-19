@@ -13,6 +13,9 @@ namespace SugiBpm.Execution.Test.Mappings
         public ActivityStateMap()
         {
             Property(p => p.ActorRoleName).HasColumnName("actorRoleName").HasColumnType("nvarchar").HasMaxLength(255).IsOptional();
+            Property(p => p.AssignmentDelegationId).HasColumnName("assignmentDelegation").IsOptional();
+            HasOptional(o => o.AssignmentDelegation).WithMany().HasForeignKey(f => f.AssignmentDelegationId);
+            //Property(p => p.ActorRoleName).HasColumnName("actorRoleName").HasColumnType("nvarchar").HasMaxLength(255).IsOptional();
             //HasOptional(o => o.AssignmentDelegation).WithOptionalDependent().Map(m => m.MapKey("assignmentDelegation"));
 
         }

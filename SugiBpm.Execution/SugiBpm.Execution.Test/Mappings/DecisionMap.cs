@@ -12,7 +12,9 @@ namespace SugiBpm.Execution.Test.Mappings
     {
         public DecisionMap()
         {
-            HasOptional(o => o.DecisionDelegation).WithOptionalDependent().Map(m => m.MapKey("decisionDelegation"));
+            Property(p => p.DecisionDelegationId).HasColumnName("decisionDelegation").IsOptional();
+            HasOptional(o => o.DecisionDelegation).WithMany().HasForeignKey(f => f.DecisionDelegationId);
+            //HasOptional(o => o.DecisionDelegation).WithOptionalDependent().Map(m => m.MapKey("decisionDelegation"));
         }
     }
 }

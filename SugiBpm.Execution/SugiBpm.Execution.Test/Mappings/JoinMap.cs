@@ -12,7 +12,9 @@ namespace SugiBpm.Execution.Test.Mappings
     {
         public JoinMap()
         {
-            HasOptional(o => o.JoinDelegation).WithOptionalDependent().Map(m => m.MapKey("joinDelegation"));
+            Property(p => p.JoinDelegationId).IsOptional();
+            HasOptional(o => o.JoinDelegation).WithMany().HasForeignKey(f => f.JoinDelegationId);
+            //HasOptional(o => o.JoinDelegation).WithOptionalDependent().Map(m => m.MapKey("joinDelegation"));
         }
     }
 }
