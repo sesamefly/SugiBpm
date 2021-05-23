@@ -45,12 +45,12 @@ namespace SugiBpm.Definition.Domain
             if (!referencableObjects.ContainsKey(referenceType))
             {
                 referencables = new Dictionary<string, object>();
-                referencableObjects.Add(referenceType,referencables);
+                referencableObjects.Add(referenceType, referencables);
             }
             else
                 referencables = referencableObjects[referenceType];
 
-            referencables.Add(name,referencableObject);
+            referencables.Add(name, referencableObject);
         }
 
         public void ResolveReferences()
@@ -65,7 +65,7 @@ namespace SugiBpm.Definition.Domain
                 Object referencedObject = FindInScope(unresolvedReference, unresolvedReference.DestinationScope);
                 if (referencedObject == null)
                 {
-                   // AddError("failed to deploy process archive : couldn't resolve " + property + "=\"" + referenceDestinationName + "\" from " + referencingObject + " in scope " + scope);
+                    // AddError("failed to deploy process archive : couldn't resolve " + property + "=\"" + referenceDestinationName + "\" from " + referencingObject + " in scope " + scope);
                 }
                 else
                 {

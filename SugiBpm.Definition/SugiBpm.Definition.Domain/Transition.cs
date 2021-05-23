@@ -3,6 +3,9 @@ using System.Xml;
 
 namespace SugiBpm.Definition.Domain
 {
+    /// <summary>
+    /// 流转表
+    /// </summary>
     public class Transition : DefinitionObject
     {
         public Node From { get; set; }

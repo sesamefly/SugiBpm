@@ -4,6 +4,9 @@ using SugiBpm.Delegation.Interface.Definition;
 
 namespace SugiBpm.Definition.Domain
 {
+    /// <summary>
+    /// 流程定义
+    /// </summary>
     public class ProcessDefinition : ProcessBlock,IProcessDefinition
     {
         public Guid StartStateId { get; set; }

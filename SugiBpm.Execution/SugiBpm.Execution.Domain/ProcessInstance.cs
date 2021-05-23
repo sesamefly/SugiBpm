@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SugiBpm.Execution.Domain
 {
+    /// <summary>
+    ///  流程实例
+    /// </summary>
     public class ProcessInstance : IProcessInstance
     {
         public Guid Id { get; set; }

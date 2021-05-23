@@ -35,6 +35,9 @@ namespace SugiBpm.Execution.Test
             builder.RegisterType<EFRepository<ProcessBlock>>().As<IRepository<ProcessBlock>>();
             builder.RegisterType<EFRepository<Flow>>().As<IRepository<Flow>>();
             builder.RegisterType<FakeDelegationHelper>().As<IDelegationHelper>();
+
+            builder.RegisterType<EFRepository<DelegationDef>>().As<IRepository<DelegationDef>>();
+
             var container = builder.Build();
 
             Autofac.Extras.CommonServiceLocator.AutofacServiceLocator serviceLocator
@@ -51,6 +54,8 @@ namespace SugiBpm.Execution.Test
             using (var unitWork = UnitOfWork.Start())
             {
                 ProcessDefinitionCreationContext creationContext = new ProcessDefinitionCreationContext();
+                // 从流程 xml 定义中获取流程配置
+                // 创建
                 ProcessDefinition processDefinition = creationContext.CreateProcessDefinition(xmlDocument);
                 creationContext.ResolveReferences();
 
@@ -59,10 +64,10 @@ namespace SugiBpm.Execution.Test
                 unitWork.Flush();
             }
             using (var unitWork = UnitOfWork.Start())
-            { 
+            {
                 var processDefinitionRepository = new EFRepository<ProcessDefinition>();
-                ProcessDefinition processDefinition = processDefinitionRepository.With(w=>w.Nodes).First();
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"),processDefinition);
+                ProcessDefinition processDefinition = processDefinitionRepository.With(w => w.Nodes).First();
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition);
                 ProcessInstance processInstance = executionContext.StartProcess();
 
                 var processInstanceRepository = new EFRepository<ProcessInstance>();
@@ -91,7 +96,7 @@ namespace SugiBpm.Execution.Test
             {
                 var processDefinitionRepository = new EFRepository<ProcessDefinition>();
                 ProcessDefinition processDefinition = processDefinitionRepository.With(w => w.Nodes).First();
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"),processDefinition);
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition);
                 ProcessInstance processInstance = executionContext.StartProcess();
 
                 var processInstanceRepository = new EFRepository<ProcessInstance>();
@@ -117,45 +122,57 @@ namespace SugiBpm.Execution.Test
         {
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load("Definitions\\HelloWorld2.xml");
+            ProcessDefinition processDefinition = new ProcessDefinition();
+            #region no use
 
-            //using (var unitWork = UnitOfWork.Start())
-            //{
-            //    ProcessDefinitionCreationContext creationContext = new ProcessDefinitionCreationContext();
-            //    ProcessDefinition processDefinition = creationContext.CreateProcessDefinition(xmlDocument);
-            //    creationContext.ResolveReferences();
+            using (var unitWork = UnitOfWork.Start())
+            {
+                ProcessDefinitionCreationContext creationContext = new ProcessDefinitionCreationContext();
+                processDefinition = creationContext.CreateProcessDefinition(xmlDocument);
+                creationContext.ResolveReferences();
 
-            //    var processBlockRepository = new EFRepository<ProcessBlock>();
-            //    processBlockRepository.Add(processDefinition);
-            //    unitWork.Flush();
-            //}
-
-            //using (var unitWork = UnitOfWork.Start())
-            //{
-            //    var processDefinitionRepository = new EFRepository<ProcessDefinition>();
-            //    ProcessDefinition processDefinition = 
-            //        processDefinitionRepository.With(w => w.Nodes).With(w=>w.Attributes).First();
-            //    ProcessInstance processInstance = new ProcessInstance(processDefinition);
-            //    ExecutionContext executionContext = new ExecutionContext(processDefinition, processInstance);
-            //    executionContext.StartProcess();
-
-            //    var processInstanceRepository = new EFRepository<ProcessInstance>();
-            //    processInstanceRepository.Add(processInstance);
-            //    unitWork.Flush();
-            //}
+                var processBlockRepository = new EFRepository<ProcessBlock>();
+                if (!processBlockRepository.Any(s => s.Name == processDefinition.Name))
+                {
+                    processBlockRepository.Add(processDefinition);
+                }
+                unitWork.Flush();
+            }
 
             using (var unitWork = UnitOfWork.Start())
             {
                 var processDefinitionRepository = new EFRepository<ProcessDefinition>();
-                ProcessDefinition processDefinition = processDefinitionRepository.First();
+                processDefinition =
+                   processDefinitionRepository.With(w => w.Nodes).With(w => w.Attributes).FirstOrDefault(s => s.Name == "Hello world 2");
+                //ProcessInstance processInstance = new ProcessInstance(new User("ae"), processDefinition);
+                //ExecutionContext executionContext = new ExecutionContext(processDefinition, processInstance);
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition);
+                //ProcessInstance processInstance = executionContext.StartProcess();
+                //var processInstanceRepository = new EFRepository<ProcessInstance>();
+                //processInstanceRepository.Add(processInstance);
+                var processInstance = executionContext.StartProcess();
+
                 var processInstanceRepository = new EFRepository<ProcessInstance>();
-                ProcessInstance processInstance = processInstanceRepository.With(w => w.RootFlow).First();
+                processInstanceRepository.Add(processInstance);
+                unitWork.Flush();
+            }
+
+            #endregion
+            using (var unitWork = UnitOfWork.Start())
+            {
+                //var processDefinitionRepository = new EFRepository<ProcessDefinition>();
+                //ProcessDefinition processDefinition = processDefinitionRepository.Where(s => s.Name == "Hello world 2").FirstOrDefault();
+                var processInstanceRepository = new EFRepository<ProcessInstance>();
+                // 获得第一个进程实例
+                ProcessInstance processInstance = processInstanceRepository.With(w => w.RootFlow).FirstOrDefault(s => s.ProcessDefinitionId == processDefinition.Id);
 
                 IRepository<Flow> flowRepository = new EFRepository<Flow>();
-                var rootFlow = 
+                var rootFlow =
                     flowRepository.With(w => w.Node)
                     .With(w => w.AttributeInstances)
                     .Single(q => q.ProcessInstanceId == processInstance.Id);
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"),processDefinition, processInstance, rootFlow);
+
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition, processInstance, rootFlow);
 
                 IDictionary<string, object> attributeValues = new Dictionary<string, object>();
                 attributeValues.Add("the text attrib", ":-(");
@@ -208,7 +225,7 @@ namespace SugiBpm.Execution.Test
                     flowRepository.With(w => w.Node)
                     .With(w => w.AttributeInstances)
                     .Single(s => s.Id == processInstance.RootFlow.Id);
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"),processDefinition, processInstance, rootFlow);
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition, processInstance, rootFlow);
 
                 IDictionary<string, object> attributeValues = new Dictionary<string, object>();
                 attributeValues.Add("evaluation result", "approve");
@@ -316,7 +333,7 @@ namespace SugiBpm.Execution.Test
                     .With(w => w.Children)
                     .With(w => w.Parent)
                     .Single(s => s.Name == "requester");
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"),processDefinition, processInstance, requesterFlow);
+                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition, processInstance, requesterFlow);
 
                 executionContext.PerformActivity();
                 processInstanceRepository.Save(processInstance);

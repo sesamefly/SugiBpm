@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SugiBpm.Definition", "SugiBpm.Definition", "{9EFF6E94-4105-4A70-980E-607F681C4B49}"
 EndProject
@@ -24,6 +24,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SugiBpm.Definition.Test", "SugiBpm.Definition\SugiBpm.Definition.Test\SugiBpm.Definition.Test.csproj", "{755EC00C-5290-46E6-855E-8C7DF6A7684D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{EA432AD4-64A1-4034-92CB-156FC7FAC9D3}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\diagram.png = ..\..\..\Desktop\diagram.png
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SugiBpm.Delegation", "SugiBpm.Delegation", "{1C2D1AB7-355D-4F3C-9528-13B6E06D935E}"
 EndProject
@@ -130,5 +133,8 @@ Global
 		{F99B154F-9499-4CED-B0BA-DB9AFE12A4BF} = {1C2D1AB7-355D-4F3C-9528-13B6E06D935E}
 		{9A5FFA46-39CC-46EF-A83A-2C13CCE32978} = {1C2D1AB7-355D-4F3C-9528-13B6E06D935E}
 		{682B92EA-7B21-4673-83AE-3BC71ECC3950} = {CABDFFF5-1794-4B8E-A28B-847AC48D7DBB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30A5C6A1-A222-4591-918C-63B33272E630}
 	EndGlobalSection
 EndGlobal

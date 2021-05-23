@@ -68,7 +68,7 @@ namespace SugiBpm.Execution.Domain
         {
             ActivityState activityState = (ActivityState)Flow.Node;
             IRepository<Transition> transitions = ServiceLocator.Current.GetInstance<IRepository<Transition>>();
-            var leavingTransitions = transitions.With(w=>w.To).Query(new Specification<Transition>(s => s.From.Id == activityState.Id));
+            var leavingTransitions = transitions.With(w => w.From).Query(new Specification<Transition>(s => s.From.Id == activityState.Id));
 
             Transition transition = null;
             if (transitionName == null)
