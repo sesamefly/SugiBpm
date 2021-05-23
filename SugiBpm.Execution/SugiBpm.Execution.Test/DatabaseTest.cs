@@ -3,7 +3,9 @@ using FakeItEasy;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SugiBpm.Definition.Domain;
+using SugiBpm.Delegation.Interface;
 using SugiBpm.Execution.Domain;
+using SugiBpm.Organization.Application;
 using SugiBpm.Organization.Domain;
 using SunStone.Data;
 using SunStone.EntityFramework;
@@ -34,10 +36,12 @@ namespace SugiBpm.Execution.Test
             builder.RegisterType<EFRepository<Transition>>().As<IRepository<Transition>>();
             builder.RegisterType<EFRepository<ProcessBlock>>().As<IRepository<ProcessBlock>>();
             builder.RegisterType<EFRepository<Flow>>().As<IRepository<Flow>>();
+            builder.RegisterType<EFRepository<DelegationDef>>().As<IRepository<DelegationDef>>();
+            builder.RegisterType<EFRepository<Actor>>().As<IRepository<Actor>>();
+
             builder.RegisterType<FakeDelegationHelper>().As<IDelegationHelper>();
 
-            builder.RegisterType<EFRepository<DelegationDef>>().As<IRepository<DelegationDef>>();
-
+            builder.RegisterType<OrganizationApplication>().As<IOrganizationApplication>();
             var container = builder.Build();
 
             Autofac.Extras.CommonServiceLocator.AutofacServiceLocator serviceLocator
@@ -123,6 +127,8 @@ namespace SugiBpm.Execution.Test
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load("Definitions\\HelloWorld2.xml");
             ProcessDefinition processDefinition = new ProcessDefinition();
+            ProcessInstance processInstance = new ProcessInstance();
+            var user = new User("h.c");
             #region no use
 
             using (var unitWork = UnitOfWork.Start())
@@ -138,7 +144,7 @@ namespace SugiBpm.Execution.Test
                 }
                 unitWork.Flush();
             }
-
+            // 准备processInstance
             using (var unitWork = UnitOfWork.Start())
             {
                 var processDefinitionRepository = new EFRepository<ProcessDefinition>();
@@ -146,11 +152,13 @@ namespace SugiBpm.Execution.Test
                    processDefinitionRepository.With(w => w.Nodes).With(w => w.Attributes).FirstOrDefault(s => s.Name == "Hello world 2");
                 //ProcessInstance processInstance = new ProcessInstance(new User("ae"), processDefinition);
                 //ExecutionContext executionContext = new ExecutionContext(processDefinition, processInstance);
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition);
+                var userContext = new EFRepository<User>();
+                user = userContext.FirstOrDefault(s => s.UniqueName == user.UniqueName);
+                ExecutionContext executionContext = new ExecutionContext(user, processDefinition);
                 //ProcessInstance processInstance = executionContext.StartProcess();
                 //var processInstanceRepository = new EFRepository<ProcessInstance>();
                 //processInstanceRepository.Add(processInstance);
-                var processInstance = executionContext.StartProcess();
+                processInstance = executionContext.StartProcess();
 
                 var processInstanceRepository = new EFRepository<ProcessInstance>();
                 processInstanceRepository.Add(processInstance);
@@ -163,8 +171,8 @@ namespace SugiBpm.Execution.Test
                 //var processDefinitionRepository = new EFRepository<ProcessDefinition>();
                 //ProcessDefinition processDefinition = processDefinitionRepository.Where(s => s.Name == "Hello world 2").FirstOrDefault();
                 var processInstanceRepository = new EFRepository<ProcessInstance>();
-                // 获得第一个进程实例
-                ProcessInstance processInstance = processInstanceRepository.With(w => w.RootFlow).FirstOrDefault(s => s.ProcessDefinitionId == processDefinition.Id);
+                // 获得第一个进程实例，该方法无法获得预定（helloworld2)
+                // processInstance = processInstanceRepository.With(w => w.RootFlow).FirstOrDefault(s => s.ProcessDefinitionId == processDefinition.Id);
 
                 IRepository<Flow> flowRepository = new EFRepository<Flow>();
                 var rootFlow =
@@ -172,7 +180,7 @@ namespace SugiBpm.Execution.Test
                     .With(w => w.AttributeInstances)
                     .Single(q => q.ProcessInstanceId == processInstance.Id);
 
-                ExecutionContext executionContext = new ExecutionContext(new User("ae"), processDefinition, processInstance, rootFlow);
+                ExecutionContext executionContext = new ExecutionContext(user, processDefinition, processInstance, rootFlow);
 
                 IDictionary<string, object> attributeValues = new Dictionary<string, object>();
                 attributeValues.Add("the text attrib", ":-(");

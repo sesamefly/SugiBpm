@@ -19,7 +19,7 @@ namespace SugiBpm.Execution.Test
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Configurations.Add(new ActorMap());
             modelBuilder.Configurations.Add(new ActionMap());
             modelBuilder.Configurations.Add(new ActivityStateMap());
             modelBuilder.Configurations.Add(new AttributeMap());
@@ -29,6 +29,7 @@ namespace SugiBpm.Execution.Test
             modelBuilder.Configurations.Add(new FieldMap());
             modelBuilder.Configurations.Add(new ForkMap());
             modelBuilder.Configurations.Add(new JoinMap());
+            modelBuilder.Configurations.Add(new GroupMap());
             modelBuilder.Configurations.Add(new NodeMap());
             modelBuilder.Configurations.Add(new ProcessBlockMap());
             modelBuilder.Configurations.Add(new ProcessDefinitionMap());

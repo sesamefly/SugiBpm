@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SugiBpm.Definition", "SugiBpm.Definition", "{9EFF6E94-4105-4A70-980E-607F681C4B49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SugiBpm.Execution", "SugiBpm.Execution", "{6C077495-0EC6-458C-851F-4CC422942D49}"
+	ProjectSection(SolutionItems) = preProject
+		SugiBpm.Delegation\SugiBpm.Delegation.Components\Assignment\AssignmentExpressionResolver.cs = SugiBpm.Delegation\SugiBpm.Delegation.Components\Assignment\AssignmentExpressionResolver.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SugiBpm.Organization", "SugiBpm.Organization", "{ED6704B5-2168-4728-A1B0-A5E29937C321}"
 EndProject
